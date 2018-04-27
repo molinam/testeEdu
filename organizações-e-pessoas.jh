@@ -1,0 +1,255 @@
+entity Owner
+entity Car
+relationship OneToMany {
+  Owner{car} to Car{owner}
+}
+
+entity Caracteristica {
+	id Integer
+    descricao String maxlength(200)
+}
+
+entity ValorCaracteristica {
+	id Integer maxlength(9)
+    descricao String maxlength(1024)
+}
+
+relationship OneToMany {
+	Caracteristica to ValorCaracteristica
+}
+
+/**
+* Tipo Papel
+*/
+entity TipoPapel {
+	id Integer
+    descricao String
+}
+
+/**
+* Tipo de parte envolvida
+*/
+entity TipoParteEnvolvida {
+	id Integer
+    descricao String
+}
+
+relationship ManyToMany {
+	TipoParteEnvolvida{tipoPapel} to TipoPapel{tipoParteEnvolvida}
+}
+
+entity Papel {
+	id Integer
+}
+
+relationship OneToMany {
+	TipoPapel to Papel
+}
+
+//entity TipoPapelTipoParteEnvolvida {
+//	id Integer
+//}
+
+//relationship OneToMany {
+//	TipoParteEnvolvida to TipoPapelTipoParteEnvolvida
+//}
+
+//relationship OneToMany {
+//	TipoPapel to TipoPapelTipoParteEnvolvida
+//}
+
+entity Email {
+	id Integer
+	descricao String
+}
+
+relationship OneToMany {
+	ValorCaracteristica to Email{tipo}
+}
+
+
+entity Telefone {
+	id Integer
+    ddi String
+    ddd String
+    numero String
+    ramal String
+    principal Boolean
+}
+
+relationship OneToMany {
+	ValorCaracteristica to Telefone{tipo}
+}
+
+entity Endereco {
+	id Integer
+    cep String
+    logradouro String
+    bairro String
+    numero String
+    complemento String
+    idCidade Integer
+    principal Boolean
+}
+
+relationship OneToMany {
+	ValorCaracteristica to Endereco{tipo}
+}
+
+relationship OneToMany {
+	//Indica se a origem é a receita federal
+	ValorCaracteristica to Endereco{origem}
+}
+
+entity Identificacao {
+	id Integer
+    descricao String
+}
+
+relationship OneToMany {
+	//Indica se a origem é a receita federal
+	ValorCaracteristica to Identificacao{tipo}
+}
+
+
+/**
+* Parte Envolvida
+*/
+
+entity ParteEnvolvida {
+	id Integer
+}
+
+relationship OneToMany {
+	TipoParteEnvolvida to ParteEnvolvida
+}
+
+relationship OneToMany {
+	ParteEnvolvida to Email
+}
+
+relationship OneToMany {
+	ParteEnvolvida to Endereco
+}
+
+relationship OneToMany {
+	Telefone to ParteEnvolvida
+}
+
+relationship OneToMany {
+	Identificacao to ParteEnvolvida
+}
+
+relationship OneToMany {
+	ParteEnvolvida to Papel
+}
+
+entity Organizacao {
+	nomeEmpresarial String maxlength(200)
+    nomeFantasica String maxlength(200)
+    dataAbertura Timestamp
+}
+
+relationship OneToOne {
+	ParteEnvolvida to Organizacao
+}
+
+entity Individuo {
+	primeiroNome String maxlength(200)
+    nomeMeio String maxlength(200)
+    sobrenome String maxlength(200)
+}
+
+relationship OneToOne {
+	ParteEnvolvida to Individuo
+}
+
+entity ParticipanteMercado {
+	id Integer
+    sigla String
+}
+
+relationship OneToOne {
+	Papel to ParticipanteMercado
+}
+
+entity Classe {
+	id Integer
+    descricao String
+}
+
+entity Categoria {
+	id Integer
+    descricao String
+}
+
+relationship OneToMany {
+	Categoria to Classe
+}
+
+entity Agente {
+	id Integer
+    sigla String
+}
+
+relationship OneToMany {
+	Classe to Agente
+}
+
+relationship OneToOne {
+	ParticipanteMercado to Agente
+}
+
+entity Usuario {
+	id Integer
+    login String
+    token String
+}
+
+relationship OneToMany {
+	Usuario to ParteEnvolvida
+}
+
+entity RelacionamentoPapel {
+	id Integer
+	descricao String
+}
+
+relationship OneToMany {
+	RelacionamentoPapel to RelacionamentoPapel
+}
+
+relationship OneToMany {
+	RelacionamentoPapel{origem} to TipoPapel
+}
+
+relationship OneToMany {
+	RelacionamentoPapel{destino} to TipoPapel
+}
+
+entity RelacionamentoPapelParteEnvolvida {
+	id Integer
+}
+
+relationship OneToMany {
+	RelacionamentoPapelParteEnvolvida{tipoRelacionamento} to RelacionamentoPapel
+}
+
+relationship OneToMany {
+	RelacionamentoPapelParteEnvolvida{papelOrigem} to Papel
+}
+
+relationship OneToMany {
+	RelacionamentoPapelParteEnvolvida{papelDestino} to Papel
+}
+
+// Set pagination options
+paginate JobHistory, Employee with infinite-scroll
+paginate Job with pagination
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Employee, Job
+// Set an angular suffix
+angularSuffix * with mySuffix
